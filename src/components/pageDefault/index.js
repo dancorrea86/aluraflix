@@ -14,13 +14,13 @@ const Main = styled.main`
 
 function PageDefault({ children }) {
     return (
-        <React.Fragment>
+        <>
             <Menu />
-                <Main>
-                    {children}
-                </Main>
+            <Main>
+                {children}
+            </Main>
             <Footer />
-        </React.Fragment>
+        </>
     )
 }
 

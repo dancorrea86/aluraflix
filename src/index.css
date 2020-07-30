@@ -26,7 +26,9 @@ a {
 } 
 
 #root {
-  min-height: calc(100vh - var(--bodyPaddingtop));
+  /* min-height: calc(100vh - var(--bodyPaddingTop)); */
+  background-color: orange;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
