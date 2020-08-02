@@ -1,103 +1,118 @@
-import React, { useState } from "react";
-import PageDefault from '../../../components/PageDefault' 
-import { Link } from 'react-router-dom';
+import React, { useState } from "react"; 
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
 
- 
+const FormFieldWrapper = styled.div`
+  position: relative;
+  textarea {
+    min-height: 150px;
+  }
 
-function CadatroCategoria() {
-    const valoresIniciais = {
-        nome: '',
-        descricao: '',
-        cor: '',
+  input[type="color"] {
+      padding-left: 56px;
+  }
+`;
+
+const Label = styled.label``;
+
+Label.Text = styled.span`
+    color: #E5E5E5;
+    height: 57px;
+    position: absolute; 
+    top: 0;
+    left: 16px;
+
+    display: flex;
+    align-items: center;
+
+    transform-origin: 0% 0%;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 300;
+
+    transition: .1s ease-in-out;
+    `;
+
+
+const Input = styled.input`
+    background: #53585D;
+    color: #F5F5F5;
+    display: block;
+    width: 100%;
+    height: 57px;
+    font-size: 18px;
+
+    outline: 0;
+    border: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid #53585D;
+
+    padding: 16px 16px;
+    margin-bottom: 45px;
+
+    resize: none;
+    border-radius: 4px;
+    transition: border-color .3s;
+
+    &:focus {
+        border-bottom-color: var(--primary);
     }
-    const [categorias, setCategorias] = useState([]);
-    const [values, setValues] = useState(valoresIniciais);
 
-
-    function setValue(chave, valor) {
-        // chave: nome, descrição, bla, bli
-        setValues({
-            ...values,
-            [chave]: valor, // nome: 'valor'
-        })
+    &:focus:not([type="color"]) + span {
+        transform: scale(.4) translate(-10px);
     }
 
-    function handleChange(infosDoEvento) {
-        const { getAttribute, value } = infosDoEvento.target
-        setValue(
-            getAttribute('name'), 
-            value
-        );
-    }
+    ${function ({ hasValue }) {
+        return hasValue && css`
+            &:not([type="color"]) + span {
+            transform: scale(.4) translate(-10px);
+        `;
+    }}
+`;
+
+function FormField({ label, type, name, value, onChange}) {
+    const fieldId = `id_${name}`;
+    const isTextarea = type === 'textarea';
+    const tag = isTextarea ? 'textarea' : 'input';
+
+    const hasValue = Boolean(value.length);
 
     return (
-        <PageDefault>
-            <h1>Cadastro categoria: {values.nome}</h1>
+        <FormFieldWrapper>
+            <Label
+                htmlFor={fieldId}
+            >
+                <Input 
+                    as={tag}
+                    id={fieldId}
+                    type={type}
+                    value={value}
+                    hasValue={hasValue}
+                    name={name}
+                    onChange={onChange}
+                    />
+                <Label.Text>
+                    {label}
+                    :
+                </Label.Text>
+            </Label>
+        </FormFieldWrapper>
 
-            <form onSubmit={function handlerSubmit(infosDoEvento) {
-                infosDoEvento.preventDefault();
-                setCategorias([
-                    ...categorias,
-                    values
-                ]);
-
-                setValues(valoresIniciais)
-            }}>
-                <div>
-                    <label>
-                        Nome da Categoria:
-                        <input 
-                            type="text"
-                            name="nome"
-                            value={values.nome}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Descrição:
-                        <textarea 
-                            type="text"
-                            name="descricao"
-                            value={values.descricao}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Cor:
-                        <input 
-                            type="color"
-                            name="cor"
-                            value={values.cor}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
-                
-                <button>
-                    Cadastrar
-                </button>
-            </form>
-
-            <ul>
-                {categorias.map((categoria, indice) => {
-                    return (
-                        <li key={`${categoria}${indice}`}>
-                            {categoria.nome}
-                        </li>
-                    )
-                })}
-            </ul>
-            <Link to="/">
-                Ir para home
-            </Link>
-        </PageDefault>
     )
+}
+
+FormField.defaultProps = {
+    type: 'text',
+    value: '',
+    onChange: () => {},
+}
+
+FormField.propTypes = {
+    label: PropTypes.string.isRequired, 
+    type: PropTypes.string, 
+    // name, 
+    // value, 
+    // onChange
 }
 
 export default FormField;

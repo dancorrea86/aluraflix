@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PageDefault from '../../../components/PageDefault' 
 import { Link } from 'react-router-dom';
+import FormField from '../../../components/FormeField';
+import Button from "../../../components/Button";
 
  
 
@@ -23,12 +25,41 @@ function CadatroCategoria() {
     }
 
     function handleChange(infosDoEvento) {
-        const { getAttribute, value } = infosDoEvento.target
+        const { value } = infosDoEvento.target;
         setValue(
-            getAttribute('name'), 
+            infosDoEvento.target.getAttribute('name'), 
             value
         );
     }
+
+    useEffect(() => {
+        console.log('alo alo w brasil');
+        const URL_TOP = 'http://localhost:8080/categorias';
+        fetch(URL_TOP)
+        .then(async(respostaDoServidor) => {
+            const resposta = await respostaDoServidor.json()
+            setCategorias([
+                ...resposta
+            ])
+        })
+        
+        // setTimeout(() => {
+        //     setCategorias([
+        //         {
+        //             id: 1,
+        //             nome: 'Front End',
+        //             descricao: 'Uma categoria bacanuda',
+        //             cor: '#cbd1ff'
+        //         },
+        //         {
+        //             id: 2,
+        //             nome: 'Back End',
+        //             descricao: 'Outra categoria bacanuda',
+        //             cor: '#cbd1ff'
+        //         }
+        //     ])
+        // }, 4 * 1000);
+    }, []);
 
     return (
         <PageDefault>
@@ -43,46 +74,41 @@ function CadatroCategoria() {
 
                 setValues(valoresIniciais)
             }}>
-                <div>
-                    <label>
-                        Nome da Categoria:
-                        <input 
-                            type="text"
-                            name="nome"
-                            value={values.nome}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Descrição:
-                        <textarea 
-                            type="text"
-                            name="descricao"
-                            value={values.descricao}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
-
-                <div>
-                    <label>
-                        Cor:
-                        <input 
-                            type="color"
-                            name="cor"
-                            value={values.cor}
-                            onChange={handleChange}
-                        />
-                    </label>
-                </div>
                 
-                <button>
+                <FormField
+                    label="Nome da categoria"
+                    type="text"
+                    name="nome" 
+                    value={values.nome}
+                    onChange={handleChange}
+                />
+
+                <FormField
+                    label="Descrição"
+                    type="textarea"
+                    name="descricao" 
+                    value={values.descricao}
+                    onChange={handleChange}
+                />
+
+                <FormField
+                    label="Cor"
+                    type="color"
+                    name="cor" 
+                    value={values.cor}
+                    onChange={handleChange}
+                />
+                
+                <Button>
                     Cadastrar
-                </button>
+                </Button>
             </form>
+
+            {categorias.length === 0 && (
+                <div>
+                    Loading...
+                </div>
+            )}
 
             <ul>
                 {categorias.map((categoria, indice) => {
